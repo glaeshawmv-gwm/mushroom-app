@@ -1,7 +1,8 @@
-numpy==1.26.4
-tensorflow==2.14.0
-opencv-python-headless==4.10.0.84
 fastapi==0.111.1
 uvicorn==0.22.0
+numpy
+opencv-python-headless
+joblib==1.4.2
+tensorflow-cpu==2.14.0
 pillow
 python-multipart
