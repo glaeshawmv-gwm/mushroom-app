@@ -1,8 +1,9 @@
 from fastapi import FastAPI, UploadFile, File
 from fastapi.responses import JSONResponse
-import uvicorn
 import numpy as np
 import cv2
+
+# Import your prediction function
 from predict import predict_image_safe_v2
 
 app = FastAPI(title="Mushroom Classifier API")
@@ -23,15 +24,21 @@ def root():
 @app.post("/predict/")
 async def predict(file: UploadFile = File(...)):
     try:
+        # Read file → decode image
         contents = await file.read()
         nparr = np.frombuffer(contents, np.uint8)
         img_bgr = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
         if img_bgr is None:
-            return JSONResponse(status_code=400, content={"error": "Invalid image file"})
+            return JSONResponse(
+                status_code=400,
+                content={"error": "Invalid image file"}
+            )
 
+        # Prediction
         pred_class, maxp, m_dist, probs = predict_image_safe_v2(img_bgr)
 
+        # Convert output to JSON
         prob_dict = {cls: float(p) for cls, p in zip(CLASSES, probs)}
 
         return {
@@ -42,7 +49,7 @@ async def predict(file: UploadFile = File(...)):
         }
 
     except Exception as e:
-        return JSONResponse(status_code=500, content={"error": f"Prediction failed: {str(e)}"})
-
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+        return JSONResponse(
+            status_code=500,
+            content={"error": f"Prediction failed: {str(e)}"}
+        )
