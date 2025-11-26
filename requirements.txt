@@ -1,0 +1,9 @@
+fastapi==0.111.1
+uvicorn[standard]==0.22.0
+numpy
+opencv-python-headless
+tensorflow==2.14.0
+scikit-learn
+scipy
+joblib
+pandas
